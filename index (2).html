@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sara Aakash — Rajendra Yadav</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi:ital@0;1&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Tiro Devanagari Hindi', serif; background: #0a0f1e; color: #e8eaf6; min-height: 100vh; }
+    .overlay { position: fixed; inset: 0; background: rgba(5,8,20,0.97); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.5s ease; }
+    .overlay.hide { opacity: 0; pointer-events: none; }
+    .overlay-box { background: #0e1730; border: 1px solid rgba(100,149,237,0.35); border-radius: 16px; padding: 2rem 2.5rem; max-width: 420px; width: 90%; text-align: center; box-shadow: 0 8px 40px rgba(0,0,0,0.5); }
+    .overlay-icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+    .overlay-title { font-size: 1.3rem; color: #c5cae9; margin-bottom: 0.4rem; font-weight: 700; font-family: 'Playfair Display', serif; }
+    .overlay-sub { font-size: 13px; color: rgba(197,202,233,0.6); margin-bottom: 1.5rem; line-height: 1.6; font-family: sans-serif; }
+    .inp { width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(100,149,237,0.3); border-radius: 8px; color: #e8eaf6; font-size: 14px; font-family: sans-serif; margin-bottom: 10px; outline: none; transition: border 0.2s; }
+    .inp:focus { border-color: #6495ed; }
+    .inp:disabled { opacity: 0.4; }
+    .btn-primary { width: 100%; padding: 11px; background: rgba(100,149,237,0.18); border: 1.5px solid #6495ed; border-radius: 8px; color: #90caf9; font-size: 14px; font-family: sans-serif; cursor: pointer; transition: all 0.2s; font-weight: 600; }
+    .btn-primary:hover { background: rgba(100,149,237,0.32); }
+    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+    .err-msg { font-size: 12px; color: #ef9a9a; margin-top: 8px; min-height: 16px; font-family: sans-serif; }
+    .success-msg { font-size: 13px; color: #a5d6a7; margin-top: 8px; min-height: 16px; font-family: sans-serif; }
+    .skip-link { display: block; text-align: center; margin-top: 12px; font-size: 12px; color: rgba(197,202,233,0.45); cursor: pointer; text-decoration: underline; font-family: sans-serif; }
+    .skip-link:hover { color: rgba(197,202,233,0.7); }
+    .timer-bar-wrap { width: 100%; height: 4px; background: rgba(255,255,255,0.08); border-radius: 4px; margin-bottom: 1.2rem; overflow: hidden; }
+    .timer-bar { height: 100%; background: #6495ed; border-radius: 4px; transition: width 1s linear; }
+    .timer-txt { font-size: 12px; color: rgba(197,202,233,0.6); margin-bottom: 0.6rem; font-family: sans-serif; }
+    #cookie-banner { position: fixed; bottom: 0; left: 0; right: 0; z-index: 8888; background: #0e1730; border-top: 1px solid rgba(100,149,237,0.2); padding: 1rem 1.5rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+    #cookie-banner p { font-size: 12px; color: rgba(197,202,233,0.7); flex: 1; min-width: 220px; line-height: 1.6; font-family: sans-serif; }
+    #cookie-banner p a { color: #6495ed; text-decoration: underline; cursor: pointer; }
+    .cookie-btns { display: flex; gap: 8px; flex-shrink: 0; }
+    .btn-cookie-acc { padding: 7px 18px; background: #3f5fb0; border: none; border-radius: 6px; color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; font-family: sans-serif; }
+    .btn-cookie-rej { padding: 7px 18px; background: transparent; border: 1px solid rgba(100,149,237,0.4); border-radius: 6px; color: rgba(197,202,233,0.7); font-size: 12px; cursor: pointer; font-family: sans-serif; }
+    #welcome { position: fixed; inset: 0; background: #0a0f1e; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 7777; transition: opacity 0.8s ease; }
+    #welcome.hide { opacity: 0; pointer-events: none; }
+    .om { font-size: 4rem; color: #6495ed; animation: pulse 2s infinite; margin-bottom: 1rem; }
+    @keyframes pulse { 0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.08);opacity:0.8} }
+    .jai-shree-ram { font-size: 2.8rem; font-weight: 700; color: #c5cae9; text-align: center; line-height: 1.3; margin-bottom: 0.5rem; animation: glow 2s infinite alternate; }
+    @keyframes glow { from{text-shadow:0 0 10px rgba(100,149,237,0.4)}to{text-shadow:0 0 30px rgba(100,149,237,0.9),0 0 60px rgba(100,149,237,0.4)} }
+    .jai-sub { font-size: 1rem; color: rgba(100,149,237,0.6); margin-bottom: 2.5rem; letter-spacing: 3px; font-family: sans-serif; }
+    .divider { width: 120px; height: 1px; background: linear-gradient(90deg,transparent,#6495ed,transparent); margin-bottom: 2rem; }
+    .enter-btn { padding: 12px 36px; background: transparent; border: 1.5px solid #6495ed; border-radius: 30px; color: #90caf9; font-size: 1rem; font-family: sans-serif; cursor: pointer; letter-spacing: 1px; transition: all 0.3s; font-weight: 600; }
+    .enter-btn:hover { background: rgba(100,149,237,0.15); transform: scale(1.05); }
+    .diyas { position: absolute; bottom: 40px; display: flex; gap: 20px; }
+    .diya { width: 12px; height: 12px; border-radius: 50%; background: #6495ed; animation: flicker 1.5s infinite alternate; box-shadow: 0 0 10px #6495ed,0 0 20px rgba(100,149,237,0.5); }
+    .diya:nth-child(2){animation-delay:0.3s}.diya:nth-child(3){animation-delay:0.6s}.diya:nth-child(4){animation-delay:0.9s}.diya:nth-child(5){animation-delay:1.2s}
+    @keyframes flicker{from{opacity:0.6;transform:scale(0.9)}to{opacity:1;transform:scale(1.1)}}
+    .consent-overlay { position:fixed; inset:0; background:rgba(5,8,20,0.92); display:flex; align-items:center; justify-content:center; z-index:6666; }
+    .consent-box { background:#0e1730; border:1px solid rgba(100,149,237,0.35); border-radius:16px; padding:2rem; max-width:440px; width:90%; }
+    .consent-title { font-size:1.1rem; color:#c5cae9; font-weight:700; margin-bottom:0.5rem; font-family:'Playfair Display',serif; }
+    .consent-desc { font-size:12.5px; color:rgba(197,202,233,0.7); line-height:1.7; margin-bottom:1rem; font-family:sans-serif; }
+    .consent-item { display:flex; gap:8px; align-items:flex-start; margin-bottom:6px; font-size:12px; color:rgba(197,202,233,0.65); line-height:1.5; font-family:sans-serif; }
+    .consent-item span { color:#6495ed; font-size:14px; flex-shrink:0; }
+    #site { display: none; }
+    #site.show { display: block; }
+    .hero { background: linear-gradient(135deg,#0d1533 0%,#1a2a5e 50%,#0d1533 100%); padding: 3rem 1.5rem 2rem; text-align: center; position: relative; overflow: hidden; }
+    .hero::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(45deg,transparent,transparent 40px,rgba(100,149,237,0.03) 40px,rgba(100,149,237,0.03) 80px); }
+    .hero-badge { display:inline-block; background:rgba(100,149,237,0.15); border:1px solid rgba(100,149,237,0.4); color:#90caf9; font-size:12px; padding:4px 14px; border-radius:20px; margin-bottom:1rem; letter-spacing:2px; font-family:sans-serif; }
+    .hero h1 { font-size:2.8rem; color:#c5cae9; line-height:1.2; margin-bottom:0.4rem; text-shadow:0 2px 20px rgba(100,149,237,0.3); }
+    .hero h2 { font-family:'Playfair Display',serif; font-size:1rem; color:rgba(197,202,233,0.65); font-style:italic; margin-bottom:1.5rem; font-weight:400; }
+    .hero-meta { display:flex; justify-content:center; gap:2.5rem; flex-wrap:wrap; }
+    .meta-item .val { font-size:1.2rem; font-weight:700; color:#90caf9; display:block; }
+    .meta-item .lbl { font-size:11px; letter-spacing:1px; color:rgba(197,202,233,0.6); font-family:sans-serif; }
+    nav { display:flex; justify-content:center; background:#080d20; border-bottom:1px solid rgba(100,149,237,0.2); overflow-x:auto; position:sticky; top:0; z-index:100; }
+    nav::-webkit-scrollbar{display:none}
+    .nav-btn { padding:14px 20px; font-size:13px; border:none; background:transparent; color:rgba(197,202,233,0.6); cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; font-family:sans-serif; transition:all 0.2s; font-weight:500; }
+    .nav-btn.active,.nav-btn:hover { color:#90caf9; border-bottom-color:#6495ed; }
+    .content { padding:1.5rem; max-width:740px; margin:0 auto; }
+    .section { display:none; }
+    .section.active { display:block; animation:fadeIn 0.4s ease; }
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .sec-heading { font-size:11px; font-weight:600; color:#6495ed; margin-bottom:1rem; padding-bottom:8px; border-bottom:1px solid rgba(100,149,237,0.2); font-family:sans-serif; letter-spacing:1.5px; text-transform:uppercase; }
+    .card { background:rgba(255,255,255,0.04); border:0.5px solid rgba(100,149,237,0.2); border-radius:12px; padding:1.25rem; margin-bottom:1rem; position:relative; }
+    .card-title { display:flex; align-items:center; gap:8px; font-size:1rem; font-weight:500; color:#c5cae9; margin-bottom:0.6rem; }
+    .card-icon { width:32px; height:32px; border-radius:8px; background:rgba(100,149,237,0.15); display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; }
+    .share-btn { position:absolute; top:10px; right:10px; padding:4px 10px; font-size:11px; border-radius:6px; border:1px solid rgba(100,149,237,0.3); background:rgba(100,149,237,0.1); color:#90caf9; cursor:pointer; font-family:sans-serif; transition:all 0.2s; }
+    .share-btn:hover { background:rgba(100,149,237,0.25); }
+    .char-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem; margin-bottom:1rem; }
+    .char-card { background:rgba(255,255,255,0.04); border:0.5px solid rgba(100,149,237,0.15); border-radius:12px; padding:1.1rem; position:relative; }
+    .char-name { font-size:1.05rem; font-weight:500; color:#c5cae9; margin-bottom:4px; }
+    .char-tag { font-size:11px; padding:2px 8px; border-radius:10px; background:rgba(100,149,237,0.1); border:0.5px solid rgba(100,149,237,0.2); color:rgba(197,202,233,0.8); display:inline-block; margin-bottom:8px; font-family:sans-serif; }
+    .problem-list { list-style:none; }
+    .problem-item { display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:0.5px solid rgba(100,149,237,0.1); }
+    .problem-item:last-child{border:none}
+    .prob-num { width:28px; height:28px; border-radius:50%; background:rgba(100,149,237,0.15); border:1px solid rgba(100,149,237,0.3); display:flex; align-items:center; justify-content:center; font-size:13px; color:#90caf9; flex-shrink:0; }
+    .prob-text strong { display:block; font-size:14px; color:#c5cae9; margin-bottom:3px; }
+    .prob-text span { font-size:13px; color:rgba(197,202,233,0.65); }
+    .author-flex { display:flex; gap:1rem; align-items:flex-start; }
+    .author-avatar { width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg,#3f5fb0,#6495ed); display:flex; align-items:center; justify-content:center; font-size:1.4rem; color:white; flex-shrink:0; font-weight:700; }
+    .author-name-h { font-size:1.1rem; font-weight:500; color:#c5cae9; margin-bottom:4px; }
+    .author-years { font-size:12px; color:rgba(197,202,233,0.6); margin-bottom:8px; font-family:sans-serif; }
+    .author-bio { font-size:13px; color:rgba(197,202,233,0.75); line-height:1.8; }
+    .tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+    .tag { font-size:11px; padding:3px 10px; border-radius:12px; background:rgba(100,149,237,0.1); border:0.5px solid rgba(100,149,237,0.25); color:rgba(197,202,233,0.8); font-family:sans-serif; }
+    .concl-quote { border-left:3px solid #6495ed; padding:0.75rem 1rem; background:rgba(100,149,237,0.07); border-radius:0 8px 8px 0; margin:1rem 0; font-size:14px; color:rgba(197,202,233,0.85); line-height:1.9; font-style:italic; }
+    .stat-grid { display:flex; gap:12px; margin-bottom:1rem; flex-wrap:wrap; }
+    .stat-box { background:rgba(255,255,255,0.04); border:0.5px solid rgba(100,149,237,0.2); border-radius:8px; padding:0.75rem 1.2rem; font-family:sans-serif; }
+    .stat-val { font-size:1.4rem; font-weight:700; color:#90caf9; }
+    .stat-lbl { font-size:11px; color:rgba(197,202,233,0.45); margin-top:2px; }
+    .visitor-card { background:rgba(255,255,255,0.04); border:0.5px solid rgba(100,149,237,0.15); border-radius:10px; padding:1rem; margin-bottom:0.75rem; }
+    .badge { display:inline-block; font-size:10px; padding:2px 8px; border-radius:8px; font-family:sans-serif; margin-left:6px; }
+    .badge-yes { background:rgba(165,214,167,0.15); color:#a5d6a7; border:0.5px solid rgba(165,214,167,0.3); }
+    .btn-sm { padding:7px 16px; background:transparent; border:1px solid rgba(100,149,237,0.35); border-radius:6px; color:rgba(197,202,233,0.7); font-size:12px; cursor:pointer; font-family:sans-serif; transition:all 0.2s; }
+    .btn-sm:hover { background:rgba(100,149,237,0.1); }
+    .btn-danger { border-color:rgba(239,154,154,0.4); color:#ef9a9a; }
+    .btn-danger:hover { background:rgba(239,154,154,0.1); }
+    .empty-state { text-align:center; padding:2.5rem 1rem; color:rgba(197,202,233,0.35); font-size:14px; font-family:sans-serif; }
+    footer { text-align:center; padding:1.5rem; color:rgba(197,202,233,0.4); font-size:12px; border-top:1px solid rgba(100,149,237,0.1); margin-top:2rem; font-family:sans-serif; }
+    footer span { color:#90caf9; }
+    .copyright-line { text-align:center; padding:0.5rem 1.5rem 1.2rem; color:rgba(197,202,233,0.28); font-size:11px; font-family:sans-serif; letter-spacing:1.2px; text-transform:uppercase; }
+    #share-modal { position:fixed; inset:0; background:rgba(5,8,20,0.88); display:none; align-items:center; justify-content:center; z-index:5000; }
+    #share-modal.open { display:flex; }
+    .share-modal-box { background:#0e1730; border:1px solid rgba(100,149,237,0.35); border-radius:16px; padding:2rem; max-width:400px; width:90%; box-shadow:0 8px 40px rgba(0,0,0,0.5); position:relative; }
+    .share-modal-title { font-size:1.05rem; color:#c5cae9; font-weight:700; margin-bottom:0.4rem; font-family:'Playfair Display',serif; }
+    .share-modal-sub { font-size:12px; color:rgba(197,202,233,0.55); margin-bottom:1.2rem; font-family:sans-serif; line-height:1.6; }
+    .share-close { position:absolute; top:12px; right:14px; background:none; border:none; color:rgba(197,202,233,0.5); font-size:1.2rem; cursor:pointer; }
+  </style>
+</head>
+<body>
+
+<div class="overlay" id="pw-gate">
+  <div class="overlay-box">
+    <div class="overlay-icon">🔐</div>
+    <div class="overlay-title">Protected Content</div>
+    <div class="overlay-sub">This page is password protected.<br>Enter the password to continue.</div>
+    <input class="inp" type="password" id="pw-inp" placeholder="Enter password..." onkeydown="if(event.key==='Enter')checkPw()"/>
+    <button class="btn-primary" onclick="checkPw()">Unlock →</button>
+    <div class="err-msg" id="pw-err"></div>
+  </div>
+</div>
+
+<div id="cookie-banner" style="display:none;">
+  <p>🍪 This site uses essential cookies for session management. No personal data is collected without your explicit consent. <a onclick="showCookieDetails()">Learn more</a></p>
+  <div class="cookie-btns">
+    <button class="btn-cookie-acc" onclick="acceptCookies()">Accept ✓</button>
+    <button class="btn-cookie-rej" onclick="rejectCookies()">Decline</button>
+  </div>
+</div>
+
+<div id="welcome" style="display:none;">
+  <div class="om">🕉️</div>
+  <div class="jai-shree-ram">जय श्री राम 🙏</div>
+  <div class="jai-sub">JAI SHREE RAM</div>
+  <div class="divider"></div>
+  <button class="enter-btn" onclick="enterSite()">Enter Site →</button>
+  <div class="diyas">
+    <div class="diya"></div><div class="diya"></div><div class="diya"></div>
+    <div class="diya"></div><div class="diya"></div>
+  </div>
+</div>
+
+<div class="overlay" id="login-gate" style="display:none;opacity:0;">
+  <div class="overlay-box">
+    <div class="overlay-icon">👤</div>
+    <div class="overlay-title">Sign In</div>
+    <div class="timer-txt" id="timer-txt">Login form activates in 15 seconds...</div>
+    <div class="timer-bar-wrap"><div class="timer-bar" id="timer-bar" style="width:100%"></div></div>
+    <div class="overlay-sub">Sign in with your Gmail to save your progress.<br><small style="color:rgba(197,202,233,0.35);font-size:11px;">Your data is stored encrypted. Consent will be taken next.</small></div>
+    <input class="inp" type="email" id="email-inp" placeholder="Your Gmail (example@gmail.com)" disabled/>
+    <button class="btn-primary" id="login-btn" onclick="doLogin()" disabled>Sign In →</button>
+    <div class="err-msg" id="login-err"></div>
+    <span class="skip-link" onclick="skipLogin()">Skip for now</span>
+  </div>
+</div>
+
+<div class="consent-overlay" id="consent-popup" style="display:none;">
+  <div class="consent-box">
+    <div class="consent-title">🛡️ Your Permission Required</div>
+    <div class="consent-desc">To understand the reach of this project by Kundan Jha, we'd like to collect the following — <strong>only with your full consent</strong>. This is completely optional.</div>
+    <div class="consent-item"><span>✉️</span> Your Gmail ID (for login)</div>
+    <div class="consent-item"><span>📍</span> Your approximate location (city/country) — <em>only if you fully agree below</em></div>
+    <div class="consent-item"><span>👤</span> Your name (optional)</div>
+    <div class="consent-item"><span>🏫</span> School / College name (optional)</div>
+    <div class="consent-desc" style="margin-top:12px;margin-bottom:1rem;font-size:11.5px;color:rgba(197,202,233,0.4);">⚠️ Data is stored <strong>encrypted</strong> and visible only to Kundan Jha. Never shared with any third party. Location is accessed <strong>only</strong> upon your explicit consent.</div>
+    <input class="inp" type="text" id="c-name" placeholder="Your name (optional)" />
+    <input class="inp" type="text" id="c-school" placeholder="School / College (optional)" />
+    <button class="btn-primary" onclick="giveConsent()">✅ Yes, I give my full consent (including location)</button>
+    <span class="skip-link" onclick="denyConsent()">No, I'd rather not share</span>
+    <div class="success-msg" id="consent-msg"></div>
+  </div>
+</div>
+
+<div id="share-modal">
+  <div class="share-modal-box">
+    <button class="share-close" onclick="closeShareModal()">✕</button>
+    <div class="share-modal-title">📧 Share This Content</div>
+    <div class="share-modal-sub" id="share-modal-label">Enter the Gmail address to receive this content.</div>
+    <input class="inp" type="email" id="share-email-inp" placeholder="Recipient Gmail (example@gmail.com)" />
+    <button class="btn-primary" onclick="sendShareEmail()" id="share-send-btn">Send to Gmail →</button>
+    <div class="err-msg" id="share-err"></div>
+    <div class="success-msg" id="share-success"></div>
+  </div>
+</div>
+
+<div id="site">
+  <div class="hero">
+    <div class="hero-badge">Hindi Literature • ISC Class XII</div>
+    <h1>सारा आकाश</h1>
+    <h2>Sara Aakash — Rajendra Yadav</h2>
+    <div class="hero-meta">
+      <div class="meta-item"><span class="val">1959</span><span class="lbl">Published</span></div>
+      <div class="meta-item"><span class="val">राजेन्द्र यादव</span><span class="lbl">Author</span></div>
+      <div class="meta-item"><span class="val">ISC Class XII</span><span class="lbl">Syllabus</span></div>
+    </div>
+  </div>
+
+  <nav>
+    <button class="nav-btn active" onclick="show('parichay',this)">Introduction</button>
+    <button class="nav-btn" onclick="show('charitra',this)">Characters</button>
+    <button class="nav-btn" onclick="show('samasya',this)">Themes</button>
+    <button class="nav-btn" onclick="show('lekhak',this)">Author</button>
+    <button class="nav-btn" onclick="show('nishkarsh',this)">Conclusion</button>
+    <button class="nav-btn" onclick="show('visitors',this)">👁 Visitors</button>
+  </nav>
+
+  <div class="content">
+
+    <div class="section active" id="parichay">
+      <p class="sec-heading">Introduction</p>
+      <div class="card">
+        <button class="share-btn" onclick="openShareModal('Introduction — कथानक')">✉ Share</button>
+        <div class="card-title"><div class="card-icon">📖</div> कथानक</div>
+        <p>'सारा आकाश' भारतीय मध्यमवर्गीय संयुक्त परिवार के जीवन, परंपराओं, सामाजिक बंधनों और मानसिक संघर्षों का अत्यंत सजीव चित्रण प्रस्तुत करता है। यह उपन्यास 1959 में प्रकाशित हुआ था।</p>
+      </div>
+      <div class="card">
+        <button class="share-btn" onclick="openShareModal('Introduction — मुख्य पात्र')">✉ Share</button>
+        <div class="card-title"><div class="card-icon">👤</div> मुख्य पात्र — समर</div>
+        <p>इस उपन्यास का मुख्य पात्र समर है — एक आदर्शवादी युवक जिसका विवाह उसकी इच्छा के विरुद्ध प्रभा से कर दिया जाता है। वह अपने आदर्शों और वास्तविक जीवन के बीच मानसिक द्वंद्व में फँसा रहता है।</p>
+      </div>
+      <div class="card">
+        <button class="share-btn" onclick="openShareModal('Introduction — उपन्यास का उद्देश्य')">✉ Share</button>
+        <div class="card-title"><div class="card-icon">🎯</div> उपन्यास का उद्देश्य</div>
+        <p>यह उपन्यास केवल एक पारिवारिक कथा नहीं है — यह मध्यमवर्गीय समाज की वास्तविक समस्याओं और व्यक्ति के आंतरिक संघर्षों को उजागर करने वाला एक महत्वपूर्ण और यथार्थवादी उपन्यास है।</p>
+      </div>
+    </div>
+
+    <div class="section" id="charitra">
+      <p class="sec-heading">Character Analysis</p>
+      <div class="char-grid">
+        <div class="char-card">
+          <button class="share-btn" onclick="openShareModal('Character — समर')">✉ Share</button>
+          <div class="char-name">समर</div><div class="char-tag">Protagonist</div>
+          <p style="font-size:13px;color:rgba(197,202,233,0.7);line-height:1.7;">आदर्शवादी युवक। आदर्श और वास्तविकता के बीच द्वंद्व में जीता है।</p>
+        </div>
+        <div class="char-card">
+          <button class="share-btn" onclick="openShareModal('Character — प्रभा')">✉ Share</button>
+          <div class="char-name">प्रभा</div><div class="char-tag">समर की पत्नी</div>
+          <p style="font-size:13px;color:rgba(197,202,233,0.7);line-height:1.7;">नई पीढ़ी की संवेदनशील स्त्री। पारिवारिक दबाव में जीती है।</p>
+        </div>
+        <div class="char-card">
+          <button class="share-btn" onclick="openShareModal('Character — दिवाकर')">✉ Share</button>
+          <div class="char-name">दिवाकर</div><div class="char-tag">व्यावहारिक</div>
+          <p style="font-size:13px;color:rgba(197,202,233,0.7);line-height:1.7;">व्यावहारिकता का प्रतीक। परिवार की परंपराओं में विश्वास रखता है।</p>
+        </div>
+        <div class="char-card">
+          <button class="share-btn" onclick="openShareModal('Character — शिरीष')">✉ Share</button>
+          <div class="char-name">शिरीष</div><div class="char-tag">प्रगतिशील</div>
+          <p style="font-size:13px;color:rgba(197,202,233,0.7);line-height:1.7;">नई सोच का प्रतिनिधि। बदलाव और स्वतंत्रता का पक्षधर।</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="samasya">
+      <p class="sec-heading">Themes &amp; Social Issues</p>
+      <div class="card">
+        <button class="share-btn" onclick="openShareModal('Themes — Social Issues')">✉ Share</button>
+        <div class="card-title"><div class="card-icon">⚖️</div> सामाजिक समस्याएँ</div>
+        <ul class="problem-list">
+          <li class="problem-item"><div class="prob-num">१</div><div class="prob-text"><strong>परंपराओं और रूढ़ियों का प्रभाव</strong><span>पुरानी मान्यताओं के कारण नई पीढ़ी की स्वतंत्रता प्रभावित होती है।</span></div></li>
+          <li class="problem-item"><div class="prob-num">२</div><div class="prob-text"><strong>संयुक्त परिवार की जटिलताएँ</strong><span>व्यक्तिगत स्वतंत्रता सीमित — सबकी इच्छाओं के अनुसार चलना पड़ता है।</span></div></li>
+          <li class="problem-item"><div class="prob-num">३</div><div class="prob-text"><strong>आर्थिक सीमाएँ</strong><span>सीमित आय के कारण आर्थिक दबाव बना रहता है।</span></div></li>
+          <li class="problem-item"><div class="prob-num">४</div><div class="prob-text"><strong>विवाह संबंधी समस्याएँ</strong><span>परिवार की इच्छा से विवाह — मानसिक दूरी और असंतोष।</span></div></li>
+          <li class="problem-item"><div class="prob-num">५</div><div class="prob-text"><strong>व्यक्ति की स्वतंत्रता का अभाव</strong><span>समाज के दबाव के कारण अपनी इच्छाओं का त्याग।</span></div></li>
+          <li class="problem-item"><div class="prob-num">६</div><div class="prob-text"><strong>पीढ़ियों के विचारों में अंतर</strong><span>नई और पुरानी पीढ़ी की सोच में टकराव उत्पन्न होता है।</span></div></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section" id="lekhak">
+      <p class="sec-heading">About the Author</p>
+      <div class="card">
+        <button class="share-btn" onclick="openShareModal('Author — राजेन्द्र यादव')">✉ Share</button>
+        <div class="author-flex">
+          <div class="author-avatar">रा</div>
+          <div>
+            <div class="author-name-h">राजेन्द्र यादव</div>
+            <div class="author-years">28 August 1929 — 28 October 2013</div>
+            <div class="author-bio">हिंदी साहित्य के 'नई कहानी आंदोलन' के प्रमुख साहित्यकार। आगरा में जन्म। 'हंस' पत्रिका के प्रसिद्ध संपादक। मध्यमवर्गीय जीवन के यथार्थवादी चित्रण के लिए प्रसिद्ध।</div>
+            <div class="tags"><span class="tag">Nayi Kahani Movement</span><span class="tag">Novelist</span><span class="tag">Editor — Hans</span><span class="tag">Realism</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <button class="share-btn" onclick="openShareModal('Author — Major Works')">✉ Share</button>
+        <div class="card-title"><div class="card-icon">📚</div> Major Works</div>
+        <div class="tags" style="margin-top:0"><span class="tag">सारा आकाश (1959)</span><span class="tag">उखड़े हुए लोग</span><span class="tag">कुलटा</span><span class="tag">शह और मात</span><span class="tag">देवताओं की मूर्तियाँ</span><span class="tag">खेल-खिलौने</span></div>
+      </div>
+    </div>
+
+    <div class="section" id="nishkarsh">
+      <p class="sec-heading">Conclusion</p>
+      <div class="card">
+        <button class="share-btn" onclick="openShareModal('Conclusion — सारा आकाश')">✉ Share</button>
+        <p style="font-size:14px;line-height:1.9;color:rgba(197,202,233,0.8);">'सारा आकाश' में राजेन्द्र यादव ने भारतीय मध्यमवर्गीय परिवार का अत्यंत यथार्थवादी चित्रण प्रस्तुत किया है। बाहरी रूप से संगठित दिखने वाले परिवार के भीतर अनेक सामाजिक, आर्थिक और मानसिक समस्याएँ विद्यमान रहती हैं।</p>
+        <div class="concl-quote">समर आदर्शवाद का, दिवाकर व्यावहारिकता का, और शिरीष प्रगतिशीलता का प्रतीक है — तीनों मिलकर मध्यमवर्गीय समाज के तीन दृष्टिकोण प्रस्तुत करते हैं।</div>
+        <p style="font-size:14px;line-height:1.9;color:rgba(197,202,233,0.8);">यह उपन्यास पाठकों को समाज, परिवार और मानवीय संबंधों के बारे में गहराई से विचार करने के लिए प्रेरित करता है।</p>
+      </div>
+    </div>
+
+    <div class="section" id="visitors">
+      <p class="sec-heading">Visitor Log</p>
+      <div class="card" id="admin-lock-box">
+        <div style="font-size:14px;color:#c5cae9;font-weight:600;margin-bottom:6px;font-family:sans-serif;">Admin Access Required</div>
+        <div style="font-size:12px;color:rgba(197,202,233,0.5);margin-bottom:1rem;font-family:sans-serif;">Enter the admin password to view visitor data.</div>
+        <input class="inp" type="password" id="admin-pw-inp" placeholder="Admin password..." onkeydown="if(event.key==='Enter')checkAdmin()"/>
+        <button class="btn-primary" onclick="checkAdmin()">View Visitors →</button>
+        <div class="err-msg" id="admin-err"></div>
+      </div>
+      <div id="visitor-data" style="display:none;">
+        <div class="stat-grid" id="visitor-stats"></div>
+        <div id="visitor-list"></div>
+        <div style="display:flex;gap:8px;margin-top:0.5rem;flex-wrap:wrap;">
+          <button class="btn-sm btn-danger" onclick="clearVisitors()">🗑 Clear All Data</button>
+          <button class="btn-sm" onclick="exportVisitors()">⬇ Export JSON</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <footer>Made with 🙏 by <span>Kundan Jha</span> &nbsp;|&nbsp; Class XII-D &nbsp;|&nbsp; <span>जय श्री राम</span></footer>
+  <div class="copyright-line">© All Copyrights and Claims with Kundan Jha. All Rights Reserved.</div>
+</div>
+
+<script>
+const SECRET = 'KundanSite2026XK';
+function xorEncrypt(str, key) {
+  let out = '';
+  for (let i = 0; i < str.length; i++)
+    out += String.fromCharCode(str.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+  return btoa(unescape(encodeURIComponent(out)));
+}
+function xorDecrypt(b64, key) {
+  try {
+    const str = decodeURIComponent(escape(atob(b64)));
+    let out = '';
+    for (let i = 0; i < str.length; i++)
+      out += String.fromCharCode(str.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+    return out;
+  } catch(e) { return null; }
+}
+function saveVisitor(data) {
+  const raw = localStorage.getItem('vlog_enc');
+  let arr = [];
+  if (raw) { try { arr = JSON.parse(xorDecrypt(raw, SECRET)) || []; } catch(e){} }
+  arr.push(data);
+  localStorage.setItem('vlog_enc', xorEncrypt(JSON.stringify(arr), SECRET));
+}
+function loadVisitors() {
+  const raw = localStorage.getItem('vlog_enc');
+  if (!raw) return [];
+  try { return JSON.parse(xorDecrypt(raw, SECRET)) || []; } catch(e) { return []; }
+}
+
+// Admin password: KUNDAN@2026
+const SITE_PW_ENC = xorEncrypt('KUNDAN@2026', SECRET);
+// Site entry password
+const ENTRY_PW_ENC = xorEncrypt('Kundanclaudethanks@2008', SECRET);
+let timerInterval = null;
+let currentShareContent = '';
+
+function checkPw() {
+  const val = document.getElementById('pw-inp').value.trim();
+  const err = document.getElementById('pw-err');
+  if (!val) { err.textContent = 'Please enter the password.'; return; }
+  if (xorEncrypt(val, SECRET) === ENTRY_PW_ENC) {
+    document.getElementById('pw-gate').classList.add('hide');
+    setTimeout(() => { document.getElementById('pw-gate').style.display = 'none'; showCookieBanner(); }, 500);
+  } else {
+    err.textContent = 'Incorrect password. Please try again.';
+    document.getElementById('pw-inp').value = '';
+    setTimeout(() => err.textContent = '', 3000);
+  }
+}
+
+function showCookieBanner() {
+  if (localStorage.getItem('cookies_accepted')) { showWelcome(); return; }
+  document.getElementById('cookie-banner').style.display = 'flex';
+}
+function acceptCookies() {
+  localStorage.setItem('cookies_accepted', '1');
+  document.getElementById('cookie-banner').style.display = 'none';
+  showWelcome();
+}
+function rejectCookies() {
+  document.getElementById('cookie-banner').style.display = 'none';
+  showWelcome();
+}
+function showCookieDetails() {
+  alert('What we store:\n- Session state\n- Cookie preference\n- Visitor info (only with explicit consent, encrypted)\n- Location (ONLY with your explicit consent)\n\nNot stored: browsing history, payment info, third-party data.\n\nAll data encrypted in localStorage, readable only by site admin.');
+}
+
+function showWelcome() {
+  document.getElementById('welcome').style.display = 'flex';
+}
+function enterSite() {
+  const w = document.getElementById('welcome');
+  w.classList.add('hide');
+  setTimeout(() => {
+    w.style.display = 'none';
+    document.getElementById('site').style.display = 'block';
+    document.getElementById('site').classList.add('show');
+    showLoginAfter15();
+  }, 800);
+}
+
+function showLoginAfter15() {
+  if (localStorage.getItem('user_email_enc')) return;
+  const gate = document.getElementById('login-gate');
+  gate.style.display = 'flex';
+  gate.style.opacity = '0';
+  let secs = 15;
+  const bar = document.getElementById('timer-bar');
+  const txt = document.getElementById('timer-txt');
+  timerInterval = setInterval(() => {
+    secs--;
+    bar.style.width = ((secs / 15) * 100) + '%';
+    txt.textContent = secs > 0 ? 'Login form activates in ' + secs + ' second' + (secs !== 1 ? 's' : '') + '...' : 'You can now sign in';
+    if (secs <= 0) {
+      clearInterval(timerInterval);
+      document.getElementById('email-inp').disabled = false;
+      document.getElementById('login-btn').disabled = false;
+    }
+  }, 1000);
+  requestAnimationFrame(() => { gate.style.opacity = '1'; gate.style.transition = 'opacity 0.5s'; });
+}
+
+function doLogin() {
+  const email = document.getElementById('email-inp').value.trim();
+  const err = document.getElementById('login-err');
+  if (!email || !email.includes('@gmail.com')) { err.textContent = 'Please enter a valid Gmail address.'; return; }
+  localStorage.setItem('user_email_enc', xorEncrypt(email, SECRET));
+  document.getElementById('login-gate').classList.add('hide');
+  setTimeout(() => { document.getElementById('login-gate').style.display = 'none'; showConsentPopup(); }, 500);
+}
+function skipLogin() {
+  clearInterval(timerInterval);
+  document.getElementById('login-gate').classList.add('hide');
+  setTimeout(() => { document.getElementById('login-gate').style.display = 'none'; }, 500);
+}
+
+function showConsentPopup() {
+  if (localStorage.getItem('consent_given')) return;
+  document.getElementById('consent-popup').style.display = 'flex';
+}
+
+function giveConsent() {
+  const emailEnc = localStorage.getItem('user_email_enc');
+  const email = emailEnc ? xorDecrypt(emailEnc, SECRET) : 'anonymous';
+  const name = document.getElementById('c-name').value.trim() || null;
+  const school = document.getElementById('c-school').value.trim() || null;
+  localStorage.setItem('consent_given', '1');
+
+  // Location accessed ONLY after 100% user consent
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      function(pos) {
+        saveVisitor({ email: email, name: name, school: school, location: { lat: pos.coords.latitude, lng: pos.coords.longitude }, time: new Date().toLocaleString('en-IN'), consented: true });
+      },
+      function() {
+        saveVisitor({ email: email, name: name, school: school, location: 'Unavailable', time: new Date().toLocaleString('en-IN'), consented: true });
+      }
+    );
+  } else {
+    saveVisitor({ email: email, name: name, school: school, location: 'Not supported', time: new Date().toLocaleString('en-IN'), consented: true });
+  }
+
+  document.getElementById('consent-msg').textContent = 'Thank you! Your data has been saved securely.';
+  setTimeout(() => { document.getElementById('consent-popup').style.display = 'none'; }, 1800);
+}
+
+function denyConsent() {
+  localStorage.setItem('consent_given', 'denied');
+  document.getElementById('consent-popup').style.display = 'none';
+}
+
+function checkAdmin() {
+  const val = document.getElementById('admin-pw-inp').value.trim();
+  if (xorEncrypt(val, SECRET) === SITE_PW_ENC) {
+    document.getElementById('admin-lock-box').style.display = 'none';
+    document.getElementById('visitor-data').style.display = 'block';
+    renderVisitors();
+  } else {
+    document.getElementById('admin-err').textContent = 'Incorrect password.';
+    setTimeout(() => document.getElementById('admin-err').textContent = '', 2000);
+  }
+}
+
+function renderVisitors() {
+  const visitors = loadVisitors();
+  const consented = visitors.filter(function(v){ return v.consented; }).length;
+  document.getElementById('visitor-stats').innerHTML =
+    '<div class="stat-box"><div class="stat-val">' + visitors.length + '</div><div class="stat-lbl">Total Visitors</div></div>' +
+    '<div class="stat-box"><div class="stat-val" style="color:#a5d6a7">' + consented + '</div><div class="stat-lbl">Consented</div></div>';
+  const list = document.getElementById('visitor-list');
+  if (!visitors.length) { list.innerHTML = '<div class="empty-state">No visitor data yet.<br>Users who give consent will appear here.</div>'; return; }
+  list.innerHTML = visitors.map(function(v, i) {
+    var locStr = '';
+    if (v.location && typeof v.location === 'object') {
+      locStr = '📍 Lat: ' + v.location.lat.toFixed(4) + ', Lng: ' + v.location.lng.toFixed(4);
+    } else if (v.location) {
+      locStr = '📍 ' + v.location;
+    } else {
+      locStr = v.type === 'share' ? '📤 Shared: ' + (v.sharedContent || '') + ' → ' + (v.sharedTo || '') : '📍 Not collected';
+    }
+    var badge = v.consented ? '<span class="badge badge-yes">Consented</span>' : '';
+    return '<div class="visitor-card">' +
+      '<div style="font-size:14px;color:#c5cae9;font-weight:500;font-family:sans-serif;">' + (i+1) + '. ' + (v.name || 'Anonymous') + (v.school ? ' — <span style="color:rgba(197,202,233,0.6)">' + v.school + '</span>' : '') + '</div>' +
+      '<div style="font-size:12px;color:rgba(197,202,233,0.6);font-family:sans-serif;margin-top:4px;">✉️ ' + v.email + badge + '</div>' +
+      '<div style="font-size:12px;color:rgba(144,202,249,0.6);font-family:sans-serif;margin-top:4px;">' + locStr + '</div>' +
+      '<div style="font-size:11px;color:rgba(197,202,233,0.35);margin-top:4px;font-family:sans-serif;">🕐 ' + v.time + '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function clearVisitors() {
+  if (confirm('Are you sure you want to clear all visitor data? This cannot be undone.')) {
+    localStorage.removeItem('vlog_enc');
+    renderVisitors();
+  }
+}
+
+function exportVisitors() {
+  var blob = new Blob([JSON.stringify(loadVisitors(), null, 2)], {type:'application/json'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'visitors_kundan_site.json';
+  a.click();
+}
+
+function show(id, btn) {
+  document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('active'); });
+  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function openShareModal(contentLabel) {
+  currentShareContent = contentLabel;
+  document.getElementById('share-modal-label').innerHTML = 'Sharing: <strong>' + contentLabel + '</strong><br><br>Enter the Gmail address to receive this content. It will be composed from <strong>kundantocome07@gmail.com</strong>.';
+  document.getElementById('share-email-inp').value = '';
+  document.getElementById('share-err').textContent = '';
+  document.getElementById('share-success').textContent = '';
+  document.getElementById('share-send-btn').disabled = false;
+  document.getElementById('share-modal').classList.add('open');
+}
+
+function closeShareModal() {
+  document.getElementById('share-modal').classList.remove('open');
+}
+
+function sendShareEmail() {
+  var email = document.getElementById('share-email-inp').value.trim();
+  var err = document.getElementById('share-err');
+  var succ = document.getElementById('share-success');
+  if (!email || !email.includes('@')) { err.textContent = 'Please enter a valid email address.'; return; }
+
+  var subject = encodeURIComponent('Sara Aakash — ' + currentShareContent + ' | Shared by Kundan Jha');
+  var body = encodeURIComponent(
+    'Namaste!\n\nYou have received shared content from the Sara Aakash study website by Kundan Jha.\n\n' +
+    'Content: ' + currentShareContent + '\n\n' +
+    'This is study material for \'Sara Aakash\' by Rajendra Yadav (ISC Class XII Hindi Literature).\n\n' +
+    '— Kundan Jha\nkundantocome07@gmail.com\n\n' +
+    'All Copyrights and Claims with Kundan Jha. All Rights Reserved.'
+  );
+
+  var gmailUrl = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(email) + '&su=' + subject + '&body=' + body;
+  window.open(gmailUrl, '_blank');
+
+  succ.textContent = 'Gmail compose window opened! Please send from kundantocome07@gmail.com.';
+  document.getElementById('share-send-btn').disabled = true;
+
+  var emailEnc = localStorage.getItem('user_email_enc');
+  var userEmail = emailEnc ? xorDecrypt(emailEnc, SECRET) : 'anonymous';
+  saveVisitor({
+    email: userEmail, name: null, school: null, location: null,
+    time: new Date().toLocaleString('en-IN'), consented: false,
+    sharedContent: currentShareContent, sharedTo: email, type: 'share'
+  });
+}
+
+window.onload = function() { document.getElementById('pw-gate').style.display = 'flex'; };
+</script>
+</body>
+</html>
